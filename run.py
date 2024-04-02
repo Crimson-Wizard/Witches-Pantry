@@ -59,28 +59,29 @@ def login():
 def add_item():
 
     """
-    function to add item to list 
+    function to add item to list. 
+    then seperate input into two values
+    then convert the seconf input into date format
     """
-    
-    print("Please enter item to pantry")
-    print("Enter Item name and date in non US format dd/mm/yyyy")
-    print("Example: Cheese,20/04/2023 no space after comma\n")
+    while True:
+        print("Please enter item to pantry")
+        print("Enter Item name and date in non US format dd/mm/yyyy")
+        print("Example: Cheese,20/04/2023 no space after comma\n")
 
-    item_str = input("Enter:")
-    
+        item_str = input("Enter:")
+        
 
-    item_date = item_str.split(",")
-    if validate_data(item_date):
-        date_str = item_date[1]
-        date = datetime.strptime( date_str, "%d/%m/%Y")
-        print(f"Item added with date: {date.strftime('%d%m%Y')}")
-    else:
-        print("Item not added, amend Date and try again")
+        item_date = item_str.split(",")
+        if validate_data(item_date):
+            date_str = item_date[1]
+            date = datetime.strptime( date_str, "%d/%m/%Y")
+            print("Item added")
+            break
     
 
 def validate_data(values):
     """
-    function to validate date in value two 1 item 2 date. check if date format is correct.
+    function to validate input values  1(0) item 2(1) date. check if date format is correct.
     """
 
     try:
@@ -90,12 +91,12 @@ def validate_data(values):
         print(f"Validating date: {values[1]}")
         datetime.strptime(values[1], "%d/%m/%Y")
 
-        return True
+       
     except ValueError as e:
         print(f"Invalid data: {e}. Please try again.")   
         return False  
 
-
+    return True
 
 
 """
