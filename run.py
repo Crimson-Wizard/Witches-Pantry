@@ -78,6 +78,7 @@ def add_item():
             print("Item added")
             break
     
+    return item_date
 
 def validate_data(values):
     """
@@ -110,5 +111,5 @@ def main():
     
     
 #login()
-add_item()   
-                                                                                                                                                                         
+item_date = add_item()   
+                                                                                                                                                                     
