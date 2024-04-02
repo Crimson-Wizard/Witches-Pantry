@@ -13,12 +13,11 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('witches_pantry')
 
-"""
+
 def read_logins():
     """
-
-    #funtion to read user name and password and split into two fields
-"""
+    funtion to read user name and password and split into two fields
+    """
     with open('logins.txt', 'r') as f:
         contents = f.readlines()
         
@@ -34,10 +33,9 @@ logins = read_logins()
                                                                                                  
 def login():
     """
-    
-    #funtion to enter user name and password to login
-    
-"""
+    funtion to enter user name and password to login
+    """
+
     ask_username = str(input('Username: '))
     ask_password = str(input('Password: '))   
     
@@ -54,7 +52,7 @@ def login():
     else:
         print('Username / Password is incorrect')
         login()  
-"""
+
 
 def add_item():
 
@@ -75,7 +73,6 @@ def add_item():
         if validate_data(item_date):
             date_str = item_date[1]
             date = datetime.strptime( date_str, "%d/%m/%Y")
-            print("Item added")
             break
     
     return item_date
@@ -99,6 +96,15 @@ def validate_data(values):
 
     return True
 
+def add_item_to_pantry(item_date):
+    """
+    funtion to add item to spreadsheet both item and date to bottom of spread sheet
+    """
+    print("updating pantry....\n")
+    pantry_worksheet = SHEET.worksheet("Rusty")
+    pantry_worksheet.append_row(item_date)
+
+
 
 """
 function to see items 1 week, 2 weeks, ,3 weeks, 1 month 
@@ -110,6 +116,7 @@ def main():
     """ 
     
     
-#login()
-item_date = add_item()   
+login()
+item_date = add_item()
+add_item_to_pantry(item_date) 
                                                                                                                                                                      
