@@ -1,5 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials 
+from datetime import datetime
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -63,10 +64,37 @@ def add_item():
     
     print("Please enter item to pantry")
     print("Enter Item name and date in non US format dd/mm/yyyy")
-    print("Example: Cheese,20/04/2023\n")
+    print("Example: Cheese,20/04/2023 no space after comma\n")
 
     item_str = input("Enter:")
-    print(f"The item and date is {item_str}")
+    
+
+    item_date = item_str.split(",")
+    if validate_data(item_date):
+        date_str = item_date[1]
+        date = datetime.strptime( date_str, "%d/%m/%Y")
+        print(f"Item added with date: {date.strftime('%d%m%Y')}")
+    else:
+        print("Item not added, amend Date and try again")
+    
+
+def validate_data(values):
+    """
+    function to validate date in value two 1 item 2 date. check if date format is correct.
+    """
+
+    try:
+        if len(values) != 2:
+            raise ValueError("Item and Use By Date required")
+
+        print(f"Validating date: {values[1]}")
+        datetime.strptime(values[1], "%d/%m/%Y")
+
+        return True
+    except ValueError as e:
+        print(f"Invalid data: {e}. Please try again.")   
+        return False  
+
 
 
 
@@ -81,5 +109,5 @@ def main():
     
     
 #login()
-add_item()                                                                                       
-                                                                                             
+add_item()   
+                                                                                                                                                                         
