@@ -14,6 +14,8 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('witches_pantry')
 
 
+ask_username =  None 
+
 def read_logins():
     """
     funtion to read user name and password and split into two fields
@@ -32,6 +34,7 @@ def read_logins():
 logins = read_logins()       
                                                                                                  
 def login():
+    global ask_username
     """
     funtion to enter user name and password to login
     """
@@ -45,6 +48,7 @@ def login():
         if line[0] == ask_username and logged_in == False:
             if line[1] == ask_password:
                 logged_in = True
+                break
                 
     if  logged_in == True:
         print('Logged in successfully, welcome to your pantry')
@@ -72,7 +76,9 @@ def add_item():
         item_date = item_str.split(",")
         if validate_data(item_date):
             date_str = item_date[1]
-            date = datetime.strptime( date_str, "%d/%m/%Y")
+            date = datetime.strptime(date_str, "%d/%m/%Y")
+            formatted_date = date.strftime('%d/%m/%Y')
+            item_date[1] = formatted_date
             break
     
     return item_date
@@ -101,7 +107,7 @@ def add_item_to_pantry(item_date):
     funtion to add item to spreadsheet both item and date to bottom of spread sheet
     """
     print("updating pantry....\n")
-    pantry_worksheet = SHEET.worksheet("Rusty")
+    pantry_worksheet = SHEET.worksheet(ask_username)
     pantry_worksheet.append_row(item_date)
 
 
@@ -113,10 +119,8 @@ function to see items 1 week, 2 weeks, ,3 weeks, 1 month
 def main():
     """
     Run all main funtions
-    """ 
-    
-    
+    """  
 login()
 item_date = add_item()
 add_item_to_pantry(item_date) 
-                                                                                                                                                                     
+                                                                                                                                                                    
