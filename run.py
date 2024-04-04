@@ -51,7 +51,7 @@ def login():
                 break
                 
     if  logged_in == True:
-        print('Logged in successfully, welcome to your pantry')
+        print(f'Logged in successfully, welcome to your pantry {ask_username}')
         main()
     else:
         print('Username / Password is incorrect')
@@ -110,7 +110,6 @@ def add_item_to_pantry(item_date):
     pantry_worksheet = SHEET.worksheet(ask_username)
     pantry_worksheet.append_row(item_date, value_input_option='USER_ENTERED')
    
-
 
 
 """
