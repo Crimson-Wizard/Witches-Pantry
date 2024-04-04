@@ -18,6 +18,20 @@ today = datetime.today()
 today_formatted = today.strftime('%d/%m/%Y')
 
 
+"""blanked out remove before deploying
+print("""\
+ ▄█     █▄   ▄█      ███      ▄████████    ▄█    █▄       ▄████████    ▄████████                        ▄███████▄    ▄████████ ███▄▄▄▄       ███        ▄████████ ▄██   ▄   
+███     ███ ███  ▀█████████▄ ███    ███   ███    ███     ███    ███   ███    ███                       ███    ███   ███    ███ ███▀▀▀██▄ ▀█████████▄   ███    ███ ███   ██▄ 
+███     ███ ███▌    ▀███▀▀██ ███    █▀    ███    ███     ███    █▀    ███    █▀                        ███    ███   ███    ███ ███   ███    ▀███▀▀██   ███    ███ ███▄▄▄███ 
+███     ███ ███▌     ███   ▀ ███         ▄███▄▄▄▄███▄▄  ▄███▄▄▄       ███                              ███    ███   ███    ███ ███   ███     ███   ▀  ▄███▄▄▄▄██▀ ▀▀▀▀▀▀███ 
+███     ███ ███▌     ███     ███        ▀▀███▀▀▀▀███▀  ▀▀███▀▀▀     ▀███████████                     ▀█████████▀  ▀███████████ ███   ███     ███     ▀▀███▀▀▀▀▀   ▄██   ███ 
+███     ███ ███      ███     ███    █▄    ███    ███     ███    █▄           ███                       ███          ███    ███ ███   ███     ███     ▀███████████ ███   ███ 
+███ ▄█▄ ███ ███      ███     ███    ███   ███    ███     ███    ███    ▄█    ███                       ███          ███    ███ ███   ███     ███       ███    ███ ███   ███ 
+ ▀███▀███▀  █▀      ▄████▀   ████████▀    ███    █▀      ██████████  ▄████████▀                       ▄████▀        ███    █▀   ▀█   █▀     ▄████▀     ███    ███  ▀█████▀  
+                                                                                                                                                       ███    ███           
+""")
+"""
+
 
 def read_logins():
     """
@@ -41,7 +55,6 @@ def login():
     """
     funtion to enter user name and password to login
     """
-
     ask_username = str(input('Username: '))
     ask_password = str(input('Password: '))   
     
@@ -62,7 +75,6 @@ def login():
 
 
 def add_item():
-
     """
     function to add item to list. 
     then seperate input into two values
@@ -74,9 +86,8 @@ def add_item():
         print("Example: Cheese,20/04/2023 no space after comma\n")
 
         item_str = input("Enter:")
-        
-
         item_date = item_str.split(",")
+
         if validate_data(item_date):
             date_str = item_date[1]
             date = datetime.strptime(date_str, "%d/%m/%Y")
@@ -98,7 +109,6 @@ def validate_data(values):
         print(f"Validating date: {values[1]}")
         datetime.strptime(values[1], "%d/%m/%Y")
 
-       
     except ValueError as e:
         print(f"Invalid data: {e}. Please try again.")   
         return False  
@@ -113,7 +123,6 @@ def add_item_to_pantry(item_date):
     pantry_worksheet = SHEET.worksheet(ask_username)
     pantry_worksheet.append_row(item_date, value_input_option='USER_ENTERED')
    
-
 def one_week():
     """
     function to see items 1 week
