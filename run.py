@@ -1,6 +1,7 @@
 import gspread
 from google.oauth2.service_account import Credentials 
-from datetime import datetime
+from datetime import datetime, timedelta 
+
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -12,9 +13,11 @@ CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('witches_pantry')
-
-
 ask_username =  None 
+today = datetime.today()
+today_formatted = today.strftime('%d/%m/%Y')
+
+
 
 def read_logins():
     """
@@ -111,16 +114,39 @@ def add_item_to_pantry(item_date):
     pantry_worksheet.append_row(item_date, value_input_option='USER_ENTERED')
    
 
+def one_week():
+    """
+    function to see items 1 week
+    """
+    one_week = today + timedelta(days=7)
+    one_week_formated = one_week.strftime('%d/%m/%Y')
+    print(one_week_formated) 
 
-"""
-function to see items 1 week, 2 weeks, ,3 weeks, 1 month 
-"""
+def two_weeks():
+    """
+    function to see items 2 week
+    """
+    two_week = today + timedelta(days=14)
+    two_week_formated = two_week.strftime('%d/%m/%Y')
+    print(two_week_formated) 
+
+def three_weeks():
+    """
+    function to see items 2 week
+    """
+    three_week = today + timedelta(days=21)
+    three_week_formated = three_week.strftime('%d/%m/%Y')
+    print(three_week_formated) 
+
 
 def main():
     """
     Run all main funtions
     """  
-login()
-item_date = add_item()
-add_item_to_pantry(item_date) 
-                                                                                                                                                                    
+#login()
+#item_date = add_item()
+#add_item_to_pantry(item_date)
+one_week()
+two_weeks()
+three_weeks()
+                                                                                                                                                                
