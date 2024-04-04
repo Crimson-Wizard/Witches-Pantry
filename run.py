@@ -108,7 +108,8 @@ def add_item_to_pantry(item_date):
     """
     print("updating pantry....\n")
     pantry_worksheet = SHEET.worksheet(ask_username)
-    pantry_worksheet.append_row(item_date)
+    pantry_worksheet.append_row(item_date, value_input_option='USER_ENTERED')
+   
 
 
 
