@@ -1,6 +1,7 @@
 import gspread
 from google.oauth2.service_account import Credentials 
 from datetime import datetime, timedelta 
+from pprint import pprint
 
 
 SCOPE = [
@@ -18,19 +19,8 @@ today = datetime.today()
 today_formatted = today.strftime('%d/%m/%Y')
 
 
-"""blanked out remove before deploying
-print("""\
- ▄█     █▄   ▄█      ███      ▄████████    ▄█    █▄       ▄████████    ▄████████                        ▄███████▄    ▄████████ ███▄▄▄▄       ███        ▄████████ ▄██   ▄   
-███     ███ ███  ▀█████████▄ ███    ███   ███    ███     ███    ███   ███    ███                       ███    ███   ███    ███ ███▀▀▀██▄ ▀█████████▄   ███    ███ ███   ██▄ 
-███     ███ ███▌    ▀███▀▀██ ███    █▀    ███    ███     ███    █▀    ███    █▀                        ███    ███   ███    ███ ███   ███    ▀███▀▀██   ███    ███ ███▄▄▄███ 
-███     ███ ███▌     ███   ▀ ███         ▄███▄▄▄▄███▄▄  ▄███▄▄▄       ███                              ███    ███   ███    ███ ███   ███     ███   ▀  ▄███▄▄▄▄██▀ ▀▀▀▀▀▀███ 
-███     ███ ███▌     ███     ███        ▀▀███▀▀▀▀███▀  ▀▀███▀▀▀     ▀███████████                     ▀█████████▀  ▀███████████ ███   ███     ███     ▀▀███▀▀▀▀▀   ▄██   ███ 
-███     ███ ███      ███     ███    █▄    ███    ███     ███    █▄           ███                       ███          ███    ███ ███   ███     ███     ▀███████████ ███   ███ 
-███ ▄█▄ ███ ███      ███     ███    ███   ███    ███     ███    ███    ▄█    ███                       ███          ███    ███ ███   ███     ███       ███    ███ ███   ███ 
- ▀███▀███▀  █▀      ▄████▀   ████████▀    ███    █▀      ██████████  ▄████████▀                       ▄████▀        ███    █▀   ▀█   █▀     ▄████▀     ███    ███  ▀█████▀  
-                                                                                                                                                       ███    ███           
-""")
-"""
+
+
 
 
 def read_logins():
@@ -129,15 +119,66 @@ def one_week():
     """
     one_week = today + timedelta(days=7)
     one_week_formated = one_week.strftime('%d/%m/%Y')
-    print(one_week_formated) 
+    worksheet = SHEET.worksheet('Rusty') #ask_username
+    records = worksheet.get_all_values()
+    headers = records[0]
+    data = records[1:]  # Exclude the header row
+    
+
+     # Find the index for the date column, assuming the date is in the second column
+    date_idx = headers.index('Date') if 'Date' in headers else 1
+
+    # Filtering records for the next week
+    upcoming_items = []
+    for row in data:
+        try:
+            item_date = datetime.strptime(row[date_idx], '%d/%m/%Y')
+            if today <= item_date <= one_week:
+                upcoming_items.append(row)
+        except ValueError:
+            continue  # Skip rows where date format is incorrect
+
+    if upcoming_items:
+        print("Items expiring within the next week:")
+        for item in upcoming_items:
+            pprint(item)
+    else:
+        print("No items expiring within the next week.")
+
+
 
 def two_weeks():
     """
     function to see items 2 week
-    """
+    """    
     two_week = today + timedelta(days=14)
     two_week_formated = two_week.strftime('%d/%m/%Y')
-    print(two_week_formated) 
+    worksheet = SHEET.worksheet('Rusty') #ask_username
+    records = worksheet.get_all_values()
+    headers = records[0]
+    data = records[1:]  # Exclude the header row
+    
+
+     # Find the index for the date column, assuming the date is in the second column
+    date_idx = headers.index('Date') if 'Date' in headers else 1
+
+    # Filtering records for the next week
+    upcoming_items = []
+    for row in data:
+        try:
+            item_date = datetime.strptime(row[date_idx], '%d/%m/%Y')
+            if today <= item_date <= two_week:
+                upcoming_items.append(row)
+        except ValueError:
+            continue  # Skip rows where date format is incorrect
+
+    if upcoming_items:
+        print("Items expiring within the next two weeks:")
+        for item in upcoming_items:
+            pprint(item)
+    else:
+        print("No items expiring within the next week.")
+ 
 
 def three_weeks():
     """
@@ -145,7 +186,45 @@ def three_weeks():
     """
     three_week = today + timedelta(days=21)
     three_week_formated = three_week.strftime('%d/%m/%Y')
-    print(three_week_formated) 
+    worksheet = SHEET.worksheet('Rusty') #ask_username
+    records = worksheet.get_all_values()
+    headers = records[0]
+    data = records[1:]  # Exclude the header row
+    
+
+     # Find the index for the date column, assuming the date is in the second column
+    date_idx = headers.index('Date') if 'Date' in headers else 1
+
+    # Filtering records for the next week
+    upcoming_items = []
+    for row in data:
+        try:
+            item_date = datetime.strptime(row[date_idx], '%d/%m/%Y')
+            if today <= item_date <= three_week:
+                upcoming_items.append(row)
+        except ValueError:
+            continue  # Skip rows where date format is incorrect
+
+    if upcoming_items:
+        print("Items expiring within the next three weeks:")
+        for item in upcoming_items:
+            pprint(item)
+    else:
+        print("No items expiring within the next week.")
+
+
+
+def delete_item()
+    """
+    funtion to delete item from spreadsheet 
+    """
+    print("Input item to delete:\n")
+    pantry_worksheet = SHEET.worksheet(ask_username)
+    pantry_worksheet.append_row(0)
+
+     remove_item = str(input('Item: '))
+
+
 
 
 def main():
@@ -155,7 +234,7 @@ def main():
 #login()
 #item_date = add_item()
 #add_item_to_pantry(item_date)
-one_week()
-two_weeks()
-three_weeks()
+#one_week()
+#two_weeks()
+#three_weeks()
                                                                                                                                                                 
