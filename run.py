@@ -119,16 +119,13 @@ def one_week():
     """
     one_week = today + timedelta(days=7)
     one_week_formated = one_week.strftime('%d/%m/%Y')
-    worksheet = SHEET.worksheet('Rusty') #ask_username
+    worksheet = SHEET.worksheet(f'{ask_username}') 
     records = worksheet.get_all_values()
     headers = records[0]
-    data = records[1:]  # Exclude the header row
+    data = records[1:]  
     
-
-     # Find the index for the date column, assuming the date is in the second column
     date_idx = headers.index('Date') if 'Date' in headers else 1
 
-    # Filtering records for the next week
     upcoming_items = []
     for row in data:
         try:
@@ -136,7 +133,7 @@ def one_week():
             if today <= item_date <= one_week:
                 upcoming_items.append(row)
         except ValueError:
-            continue  # Skip rows where date format is incorrect
+            continue  
 
     if upcoming_items:
         print("Items expiring within the next week:")
@@ -145,24 +142,19 @@ def one_week():
     else:
         print("No items expiring within the next week.")
 
-
-
 def two_weeks():
     """
     function to see items 2 week
     """    
     two_week = today + timedelta(days=14)
     two_week_formated = two_week.strftime('%d/%m/%Y')
-    worksheet = SHEET.worksheet('Rusty') #ask_username
+    worksheet = SHEET.worksheet(f'{ask_username}') 
     records = worksheet.get_all_values()
     headers = records[0]
-    data = records[1:]  # Exclude the header row
+    data = records[1:]  
     
-
-     # Find the index for the date column, assuming the date is in the second column
     date_idx = headers.index('Date') if 'Date' in headers else 1
 
-    # Filtering records for the next week
     upcoming_items = []
     for row in data:
         try:
@@ -170,7 +162,7 @@ def two_weeks():
             if today <= item_date <= two_week:
                 upcoming_items.append(row)
         except ValueError:
-            continue  # Skip rows where date format is incorrect
+            continue  
 
     if upcoming_items:
         print("Items expiring within the next two weeks:")
@@ -179,23 +171,19 @@ def two_weeks():
     else:
         print("No items expiring within the next week.")
  
-
 def three_weeks():
     """
     function to see items 2 week
     """
     three_week = today + timedelta(days=21)
     three_week_formated = three_week.strftime('%d/%m/%Y')
-    worksheet = SHEET.worksheet('Rusty') #ask_username
+    worksheet = SHEET.worksheet(f'{ask_username}') 
     records = worksheet.get_all_values()
     headers = records[0]
-    data = records[1:]  # Exclude the header row
+    data = records[1:]  
     
-
-     # Find the index for the date column, assuming the date is in the second column
     date_idx = headers.index('Date') if 'Date' in headers else 1
 
-    # Filtering records for the next week
     upcoming_items = []
     for row in data:
         try:
@@ -203,7 +191,7 @@ def three_weeks():
             if today <= item_date <= three_week:
                 upcoming_items.append(row)
         except ValueError:
-            continue  # Skip rows where date format is incorrect
+            continue  
 
     if upcoming_items:
         print("Items expiring within the next three weeks:")
@@ -212,9 +200,7 @@ def three_weeks():
     else:
         print("No items expiring within the next week.")
 
-
-
-def delete_item()
+def delete_item():
     """
     funtion to delete item from spreadsheet 
     """
@@ -222,7 +208,7 @@ def delete_item()
     pantry_worksheet = SHEET.worksheet(ask_username)
     pantry_worksheet.append_row(0)
 
-     remove_item = str(input('Item: '))
+    remove_item = str(input('Item: '))
 
 
 
@@ -231,10 +217,10 @@ def main():
     """
     Run all main funtions
     """  
-#login()
+login()
 #item_date = add_item()
 #add_item_to_pantry(item_date)
-#one_week()
+one_week()
 #two_weeks()
 #three_weeks()
                                                                                                                                                                 
