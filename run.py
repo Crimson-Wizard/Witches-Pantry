@@ -58,12 +58,33 @@ def login():
         login()  
 
 
-def select_funtion(add_item, one_week, two_week, three_week, delete_item ):
+def select_funtion():
     """
     Function to give user option to select what function to use
     """
-    print("Please choose ")
 
+    functions = {
+    '1': add_item,
+    '2': one_week,
+    '3': two_weeks,
+    '4': three_weeks,
+    '5': delete_item,  
+    }
+
+    print("Please select an option:")
+    print("1. Add an Item")
+    print("2. Show Items Expiring in One Week")
+    print("3. Show Items Expiring in Two Weeks")
+    print("4. Show Items Expiring in Three Weeks")
+    print("5. Delete an Item")
+
+    choice = input("Enter your choice 1-5 here: ")
+
+    if choice in functions:
+        funtions[choice]()
+
+    else:
+        print('Invalid choice. Please try again.')
 
 
 def add_item():
@@ -237,10 +258,5 @@ def main():
     """
     Run all main funtions
     """  
-login()
-item_date = add_item()
-add_item_to_pantry(item_date)
-one_week()
-two_weeks()
-three_weeks()
-delete_item()                                                                                                                                               
+    login()
+    select_funtion()                                                                                                                                            
