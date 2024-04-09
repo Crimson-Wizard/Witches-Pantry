@@ -36,55 +36,26 @@ logins = read_logins()
                                                                                                  
 def login():
     global ask_username
+    max_attempts = 3  # Limit the number of login attempts to prevent infinite loops
+    attempts = 0
     """
     funtion to enter user name and password to login
     """
-    ask_username = str(input('Username: '))
-    ask_password = str(input('Password: '))   
-    
-    logged_in = False
-    
-    for line in logins:
-        if line[0] == ask_username and logged_in == False:
-            if line[1] == ask_password:
-                logged_in = True
-                break
-                
-    if  logged_in == True:
-        print(f'Logged in successfully, welcome to your pantry {ask_username}')
-        main()
-    else:
+    while attempts < max_attempts:
+        ask_username = input('Username: ')
+        ask_password = input('Password: ')   
+        
+        for line in logins:
+            if line[0] == ask_username and line[1] == ask_password:
+                print(f'Logged in successfully, welcome to your pantry {ask_username}')
+                return True  # Return True to indicate a successful login
+        
         print('Username / Password is incorrect')
-        login()  
+        attempts += 1  # Increment the attempt counter
+    
+    print("Login failed. Please contact admin.")
+    return False 
 
-
-def select_funtion():
-    """
-    Function to give user option to select what function to use
-    """
-
-    functions = {
-    '1': add_item,
-    '2': one_week,
-    '3': two_weeks,
-    '4': three_weeks,
-    '5': delete_item,  
-    }
-
-    print("Please select an option:")
-    print("1. Add an Item")
-    print("2. Show Items Expiring in One Week")
-    print("3. Show Items Expiring in Two Weeks")
-    print("4. Show Items Expiring in Three Weeks")
-    print("5. Delete an Item")
-
-    choice = input("Enter your choice 1-5 here: ")
-
-    if choice in functions:
-        funtions[choice]()
-
-    else:
-        print('Invalid choice. Please try again.')
 
 
 def add_item():
@@ -253,10 +224,44 @@ def delete_item():
     if not found:
         print(f"Item '{remove_item}' not found in the worksheet.")
 
+def select_function():
+    """
+    Function to give user option to select what function to use
+    """
+
+    functions = {
+    '1': add_item,
+    '2': one_week,
+    '3': two_weeks,
+    '4': three_weeks,
+    '5': delete_item,  
+    }
+
+    print("Please select an option:")
+    print("1. Add an Item")
+    print("2. Show Items Expiring in One Week")
+    print("3. Show Items Expiring in Two Weeks")
+    print("4. Show Items Expiring in Three Weeks")
+    print("5. Delete an Item")
+
+    choice = input("Enter your choice 1-5 here: ")
+
+    if choice in functions:
+        functions[choice]()
+
+    else:
+        print('Invalid choice. Please try again.')
+
+
 
 def main():
     """
-    Run all main funtions
+    Run all main functions
     """  
-    login()
-    select_funtion()                                                                                                                                            
+    if login():
+        select_function()
+    else:
+        print("Exiting...")
+
+if __name__ == "__main__":
+    main()                                                                                                                                      
