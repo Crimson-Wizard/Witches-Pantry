@@ -3,7 +3,6 @@ from google.oauth2.service_account import Credentials
 from datetime import datetime, timedelta 
 from pprint import pprint
 
-
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
@@ -17,11 +16,6 @@ SHEET = GSPREAD_CLIENT.open('witches_pantry')
 ask_username =  None 
 today = datetime.today()
 today_formatted = today.strftime('%d/%m/%Y')
-
-
-
-
-
 
 def read_logins():
     """
@@ -62,6 +56,14 @@ def login():
     else:
         print('Username / Password is incorrect')
         login()  
+
+
+def select_funtion(add_item, one_week, two_week, three_week, delete_item ):
+    """
+    Function to give user option to select what function to use
+    """
+    print("Please choose ")
+
 
 
 def add_item():
@@ -204,13 +206,31 @@ def delete_item():
     """
     funtion to delete item from spreadsheet 
     """
-    print("Input item to delete:\n")
-    pantry_worksheet = SHEET.worksheet(ask_username)
-    pantry_worksheet.append_row(0)
+    print("Input item name to delete:\n")
+    worksheet = SHEET.worksheet(ask_username) 
+    records = worksheet.get_all_values()
+    headers = records[0]
+    data = records[1:]  
 
-    remove_item = str(input('Item: '))
+   
+    try:
+        item_idx = headers.index('Item')
+    except ValueError:
+        print("The 'Item' column was not found in the worksheet.")
+        return
 
+    remove_item = input('Item to delete:')
 
+    found = False
+    for idx, row in enumerate(data, start=2):
+        if row[item_idx] == remove_item:
+            worksheet.delete_rows(idx)
+            print(f"Item '{remove_item}' deleted successfully.")
+            found = True
+            break
+
+    if not found:
+        print(f"Item '{remove_item}' not found in the worksheet.")
 
 
 def main():
@@ -218,9 +238,9 @@ def main():
     Run all main funtions
     """  
 login()
-#item_date = add_item()
-#add_item_to_pantry(item_date)
+item_date = add_item()
+add_item_to_pantry(item_date)
 one_week()
-#two_weeks()
-#three_weeks()
-                                                                                                                                                                
+two_weeks()
+three_weeks()
+delete_item()                                                                                                                                               
