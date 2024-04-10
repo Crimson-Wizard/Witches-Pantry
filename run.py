@@ -41,8 +41,8 @@ def login():
     funtion to enter user name and password to login
     """
     while attempts < max_attempts:
-        ask_username = input('Username: ')
-        ask_password = input('Password: ')   
+        ask_username = input('Username:\n')
+        ask_password = input('Password:\n')   
         
         for line in logins:
             if line[0] == ask_username and line[1] == ask_password:
@@ -68,7 +68,7 @@ def add_item():
         print("Enter Item name and date in non US format dd/mm/yyyy")
         print("Example: Cheese,20/04/2023 no space after comma\n")
 
-        item_str = input("Enter:")
+        item_str = input("Enter:\n")
         item_date = item_str.split(",")
 
         if validate_data(item_date):
@@ -210,7 +210,7 @@ def delete_item():
         print("The 'Item' column was not found in the worksheet.")
         return
 
-    remove_item = input('Item to delete:')
+    remove_item = input('Item to delete:\n')
 
     found = False
     for idx, row in enumerate(data, start=2):
@@ -243,7 +243,7 @@ def select_function():
     print("4. Show Items Expiring in Three Weeks")
     print("5. Delete an Item")
 
-    choice = input("Enter your choice 1-5 here: ")
+    choice = input("Enter your choice 1-5 here:\n")
 
     if choice in functions:
         functions[choice]()
