@@ -1,7 +1,8 @@
 import gspread
-from google.oauth2.service_account import Credentials 
-from datetime import datetime, timedelta 
+from google.oauth2.service_account import Credentials
+from datetime import datetime, timedelta
 from pprint import pprint
+import os
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
@@ -16,50 +17,57 @@ ask_username =  None
 today = datetime.today()
 today_formatted = today.strftime('%d/%m/%Y')
 
+def clearConsole():
+    command = "clear"
+    if os.name in ("nt", "dos"):  # If Machine is running on Windows, use cls
+        command = "cls"
+    os.system(command)
+
 def read_logins():
     """
     funtion to read user name and password and split into two fields
     """
-    with open('logins.txt', 'r') as f:
-        contents = f.readlines()
-        
-        new_contents = []
-        
-        for line in contents:
-            fields = line.split(',')
-            fields[1] = fields[1].rstrip()
-            new_contents.append(fields)
-        
-        return(new_contents)
-logins = read_logins()       
+    try:
+        users_worksheet = SHEET.worksheet('users')  # Accessing the 'users' worksheet
+        records = users_worksheet.get_all_records()  # Getting all records from the sheet
+        new_contents = [[record['Username'], record['Password']] for record in records]
+        return new_contents
+    except Exception as e:
+        print(f"Failed to read logins from sheet: {e}")
+        return []
+              
+logins = read_logins() 
                                                                                                  
 def login():
-    global ask_username
-    max_attempts = 3  # Limit the number of login attempts to prevent infinite loops
-    attempts = 0
     """
     funtion to enter user name and password to login
     """
+    global ask_username
+    max_attempts = 3
+    attempts = 0
+    
     while attempts < max_attempts:
         ask_username = input('Username:\n')
-        ask_password = input('Password:\n')   
+        ask_password = input('Password:\n')
         
         for line in logins:
             if line[0] == ask_username and line[1] == ask_password:
                 print(f'Logged in successfully, welcome to your pantry {ask_username}')
-                return True  # Return True to indicate a successful login
+                return True  
         
         print('Username / Password is incorrect')
-        attempts += 1  # Increment the attempt counter
+        attempts += 1
     
     print("Login failed. Please contact admin.")
-    return False 
+    return False
+
+    
 
 
 
 def add_item():
     """
-    function to add item to list. 
+    function to add item to list.
     then seperate input into two values
     then convert the seconf input into date format
     """
@@ -80,6 +88,8 @@ def add_item():
     
     return item_date
 
+    select_function()
+
 def validate_data(values):
     """
     function to validate input values  1(0) item 2(1) date. check if date format is correct.
@@ -93,8 +103,8 @@ def validate_data(values):
         datetime.strptime(values[1], "%d/%m/%Y")
 
     except ValueError as e:
-        print(f"Invalid data: {e}. Please try again.")   
-        return False  
+        print(f"Invalid data: {e}. Please try again.") 
+        return False
 
     return True
 
@@ -111,11 +121,11 @@ def one_week():
     function to see items 1 week
     """
     one_week = today + timedelta(days=7)
-    one_week_formated = one_week.strftime('%d/%m/%Y')
-    worksheet = SHEET.worksheet(f'{ask_username}') 
+    #one_week_formated = one_week.strftime('%d/%m/%Y')
+    worksheet = SHEET.worksheet(f'{ask_username}')
     records = worksheet.get_all_values()
     headers = records[0]
-    data = records[1:]  
+    data = records[1:]
     
     date_idx = headers.index('Date') if 'Date' in headers else 1
 
@@ -126,7 +136,7 @@ def one_week():
             if today <= item_date <= one_week:
                 upcoming_items.append(row)
         except ValueError:
-            continue  
+            continue
 
     if upcoming_items:
         print("Items expiring within the next week:")
@@ -135,16 +145,18 @@ def one_week():
     else:
         print("No items expiring within the next week.")
 
+    select_function()
+
 def two_weeks():
     """
     function to see items 2 week
-    """    
+    """
     two_week = today + timedelta(days=14)
-    two_week_formated = two_week.strftime('%d/%m/%Y')
-    worksheet = SHEET.worksheet(f'{ask_username}') 
+    #two_week_formated = two_week.strftime('%d/%m/%Y')
+    worksheet = SHEET.worksheet(f'{ask_username}')
     records = worksheet.get_all_values()
     headers = records[0]
-    data = records[1:]  
+    data = records[1:]
     
     date_idx = headers.index('Date') if 'Date' in headers else 1
 
@@ -155,7 +167,7 @@ def two_weeks():
             if today <= item_date <= two_week:
                 upcoming_items.append(row)
         except ValueError:
-            continue  
+            continue
 
     if upcoming_items:
         print("Items expiring within the next two weeks:")
@@ -164,16 +176,18 @@ def two_weeks():
     else:
         print("No items expiring within the next week.")
  
+    select_function()
+
 def three_weeks():
     """
     function to see items 2 week
     """
     three_week = today + timedelta(days=21)
-    three_week_formated = three_week.strftime('%d/%m/%Y')
-    worksheet = SHEET.worksheet(f'{ask_username}') 
+    #three_week_formated = three_week.strftime('%d/%m/%Y')
+    worksheet = SHEET.worksheet(f'{ask_username}')
     records = worksheet.get_all_values()
     headers = records[0]
-    data = records[1:]  
+    data = records[1:]
     
     date_idx = headers.index('Date') if 'Date' in headers else 1
 
@@ -184,7 +198,7 @@ def three_weeks():
             if today <= item_date <= three_week:
                 upcoming_items.append(row)
         except ValueError:
-            continue  
+            continue
 
     if upcoming_items:
         print("Items expiring within the next three weeks:")
@@ -193,15 +207,17 @@ def three_weeks():
     else:
         print("No items expiring within the next week.")
 
+    select_function()
+
 def delete_item():
     """
-    funtion to delete item from spreadsheet 
+    funtion to delete item from spreadsheet
     """
     print("Input item name to delete:\n")
-    worksheet = SHEET.worksheet(ask_username) 
+    worksheet = SHEET.worksheet(ask_username)
     records = worksheet.get_all_values()
     headers = records[0]
-    data = records[1:]  
+    data = records[1:]
 
    
     try:
@@ -223,6 +239,8 @@ def delete_item():
     if not found:
         print(f"Item '{remove_item}' not found in the worksheet.")
 
+    select_function()
+
 def select_function():
     """
     Function to give user option to select what function to use
@@ -233,7 +251,7 @@ def select_function():
     '2': one_week,
     '3': two_weeks,
     '4': three_weeks,
-    '5': delete_item,  
+    '5': delete_item,
     }
 
     print("Please select an option:")
@@ -256,11 +274,11 @@ def select_function():
 def main():
     """
     Run all main functions
-    """  
-    if login():
-        select_function()
-    else:
-        print("Exiting...")
-
+    """
+    clearConsole()
+    login()
+    clearConsole()
+    select_function()
+    
 if __name__ == "__main__":
-    main()                                                                                                                                      
+    main()                                                               
