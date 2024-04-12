@@ -14,6 +14,7 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('witches_pantry')
 ask_username =  None 
+item_date = None
 today = datetime.today()
 today_formatted = today.strftime('%d/%m/%Y')
 
@@ -31,6 +32,7 @@ def clearConsole():
         command = "cls"
     os.system(command)
 
+
 def read_logins():
     """
     funtion to read user name and password and split into two fields
@@ -45,7 +47,8 @@ def read_logins():
         return []
               
 logins = read_logins() 
-                                                                                                 
+
+
 def login():
     """
     funtion to enter user name and password to login
@@ -70,15 +73,14 @@ def login():
     return False
 
     
-
-
-
 def add_item():
     """
     function to add item to list.
     then seperate input into two values
     then convert the seconf input into date format
     """
+    global item_date
+
     while True:
         print("Please enter item to pantry")
         print("Enter Item name and date in non US format dd/mm/yyyy")
@@ -98,14 +100,20 @@ def add_item():
 
     select_function()
 
+
 def validate_data(values):
     """
     function to validate input values  1(0) item 2(1) date. check if date format is correct.
     """
+    today = datetime.today().date()
 
     try:
         if len(values) != 2:
             raise ValueError("Item and Use By Date required")
+
+        item_date = datetime.strptime(values[1].strip(), "%d/%m/%Y").date()  # Parse date and strip whitespace
+        if item_date < today:
+            raise ValueError("Item date cannot be in the past.")
 
         print(f"Validating date: {values[1]}")
         datetime.strptime(values[1], "%d/%m/%Y")
@@ -117,6 +125,8 @@ def validate_data(values):
 
     return True
 
+
+
 def add_item_to_pantry(item_date):
     """
     funtion to add item to spreadsheet both item and date to bottom of spread sheet
@@ -125,6 +135,7 @@ def add_item_to_pantry(item_date):
     pantry_worksheet = SHEET.worksheet(ask_username)
     pantry_worksheet.append_row(item_date, value_input_option='USER_ENTERED')
     select_function()
+
 
 def items_expiring_today():
     """
@@ -155,7 +166,6 @@ def items_expiring_today():
             pprint(item)  # Pretty print each item
     else:
         print("No items expiring today.")
-
 
     select_function()
 
@@ -190,6 +200,7 @@ def one_week():
 
     select_function()
 
+
 def two_weeks():
     """
     function to see items 2 week
@@ -220,6 +231,7 @@ def two_weeks():
  
     select_function()
 
+
 def three_weeks():
     """
     function to see items 2 week
@@ -248,12 +260,9 @@ def three_weeks():
     else:
         print("No items expiring within the next three weeks.")
 
-    
     select_function()
     
     
-
-
 def delete_item():
     """
     funtion to delete item from spreadsheet
@@ -264,7 +273,6 @@ def delete_item():
     headers = records[0]
     data = records[1:]
 
-   
     try:
         item_idx = headers.index('Item')
     except ValueError:
@@ -285,6 +293,7 @@ def delete_item():
         print(f"Item '{remove_item}' not found in the worksheet.")
 
     select_function()
+
 
 def select_function():
     """
@@ -318,6 +327,7 @@ def select_function():
     else:
         print('Invalid choice. Please try again.')
 
+
 def log_out():
     
    main()
@@ -332,7 +342,6 @@ def main():
     clearConsole()
     heading()
     select_function()
-    
-    
+     
 if __name__ == "__main__":
     main()                                                               
