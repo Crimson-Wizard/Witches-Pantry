@@ -19,21 +19,15 @@ today_formatted = today.strftime('%d/%m/%Y')
 
 def heading():
     print(r'''
- ▄█     █▄   ▄█      ███      ▄████████    ▄█    █▄       ▄████████    ▄████████            ▄███████▄    ▄████████ ███▄▄▄▄       ███        ▄████████ ▄██   ▄   
-███     ███ ███  ▀█████████▄ ███    ███   ███    ███     ███    ███   ███    ███           ███    ███   ███    ███ ███▀▀▀██▄ ▀█████████▄   ███    ███ ███   ██▄ 
-███     ███ ███▌    ▀███▀▀██ ███    █▀    ███    ███     ███    █▀    ███    █▀            ███    ███   ███    ███ ███   ███    ▀███▀▀██   ███    ███ ███▄▄▄███ 
-███     ███ ███▌     ███   ▀ ███         ▄███▄▄▄▄███▄▄  ▄███▄▄▄       ███                  ███    ███   ███    ███ ███   ███     ███   ▀  ▄███▄▄▄▄██▀ ▀▀▀▀▀▀███ 
-███     ███ ███▌     ███     ███        ▀▀███▀▀▀▀███▀  ▀▀███▀▀▀     ▀███████████         ▀█████████▀  ▀███████████ ███   ███     ███     ▀▀███▀▀▀▀▀   ▄██   ███ 
-███     ███ ███      ███     ███    █▄    ███    ███     ███    █▄           ███           ███          ███    ███ ███   ███     ███     ▀███████████ ███   ███ 
-███ ▄█▄ ███ ███      ███     ███    ███   ███    ███     ███    ███    ▄█    ███           ███          ███    ███ ███   ███     ███       ███    ███ ███   ███ 
- ▀███▀███▀  █▀      ▄████▀   ████████▀    ███    █▀      ██████████  ▄████████▀           ▄████▀        ███    █▀   ▀█   █▀     ▄████▀     ███    ███  ▀█████▀  
-                                                                                                                                                                        
+░█░█░▀█▀░▀█▀░█▀▀░█░█░█▀▀░█▀▀░░█▀█░█▀█░█▀█░▀█▀░█▀▄░█░█
+░█▄█░░█░░░█░░█░░░█▀█░█▀▀░▀▀█░░█▀▀░█▀█░█░█░░█░░█▀▄░░█░
+░▀░▀░▀▀▀░░▀░░▀▀▀░▀░▀░▀▀▀░▀▀▀░░▀░░░▀░▀░▀░▀░░▀░░▀░▀░░▀░
     ''')
 
 
 def clearConsole():
     command = "clear"
-    if os.name in ("nt", "dos"):  # If Machine is running on Windows, use cls
+    if os.name in ("nt", "dos"):
         command = "cls"
     os.system(command)
 
@@ -42,8 +36,8 @@ def read_logins():
     funtion to read user name and password and split into two fields
     """
     try:
-        users_worksheet = SHEET.worksheet('users')  # Accessing the 'users' worksheet
-        records = users_worksheet.get_all_records()  # Getting all records from the sheet
+        users_worksheet = SHEET.worksheet('users')
+        records = users_worksheet.get_all_records()
         new_contents = [[record['Username'], record['Password']] for record in records]
         return new_contents
     except Exception as e:
@@ -115,6 +109,7 @@ def validate_data(values):
 
         print(f"Validating date: {values[1]}")
         datetime.strptime(values[1], "%d/%m/%Y")
+        print('Item added')
 
     except ValueError as e:
         print(f"Invalid data: {e}. Please try again.") 
@@ -129,13 +124,47 @@ def add_item_to_pantry(item_date):
     print("updating pantry....\n")
     pantry_worksheet = SHEET.worksheet(ask_username)
     pantry_worksheet.append_row(item_date, value_input_option='USER_ENTERED')
+    select_function()
+
+def items_expiring_today():
+    """
+    function to see items today
+    """
+    worksheet = SHEET.worksheet(f'{ask_username}')
+    records = worksheet.get_all_values()
+    headers = records[0]
+    data = records[1:]
+    
+    try:
+        date_idx = headers.index('Use by date')
+    except ValueError:
+        print("Error: 'Date' column not found.")
+        return
+
+    today = datetime.today().strftime('%d/%m/%Y')  # Get today's date formatted as 'dd/mm/yyyy'
+    upcoming_items = []
+        
+    for row in data:
+        item_date = row[date_idx].strip()  # Strip any whitespace from the date string
+        if item_date == today:
+            upcoming_items.append(row)
+
+    if upcoming_items:
+        print("Items expiring today:")
+        for item in upcoming_items:
+            pprint(item)  # Pretty print each item
+    else:
+        print("No items expiring today.")
+
+
+    select_function()
+
    
 def one_week():
     """
     function to see items 1 week
     """
     one_week = today + timedelta(days=7)
-    #one_week_formated = one_week.strftime('%d/%m/%Y')
     worksheet = SHEET.worksheet(f'{ask_username}')
     records = worksheet.get_all_values()
     headers = records[0]
@@ -166,7 +195,6 @@ def two_weeks():
     function to see items 2 week
     """
     two_week = today + timedelta(days=14)
-    #two_week_formated = two_week.strftime('%d/%m/%Y')
     worksheet = SHEET.worksheet(f'{ask_username}')
     records = worksheet.get_all_values()
     headers = records[0]
@@ -188,7 +216,7 @@ def two_weeks():
         for item in upcoming_items:
             pprint(item)
     else:
-        print("No items expiring within the next week.")
+        print("No items expiring within the next two week.")
  
     select_function()
 
@@ -197,7 +225,6 @@ def three_weeks():
     function to see items 2 week
     """
     three_week = today + timedelta(days=21)
-    #three_week_formated = three_week.strftime('%d/%m/%Y')
     worksheet = SHEET.worksheet(f'{ask_username}')
     records = worksheet.get_all_values()
     headers = records[0]
@@ -219,9 +246,13 @@ def three_weeks():
         for item in upcoming_items:
             pprint(item)
     else:
-        print("No items expiring within the next week.")
+        print("No items expiring within the next three weeks.")
 
+    
     select_function()
+    
+    
+
 
 def delete_item():
     """
@@ -262,18 +293,20 @@ def select_function():
 
     functions = {
     '1': add_item,
-    '2': one_week,
-    '3': two_weeks,
-    '4': three_weeks,
-    '5': delete_item,
+    '2': items_expiring_today,
+    '3': one_week,
+    '4': two_weeks,
+    '5': three_weeks,
+    '6': delete_item,
     }
 
     print("Please select an option:")
     print("1. Add an Item")
-    print("2. Show Items Expiring in One Week")
-    print("3. Show Items Expiring in Two Weeks")
-    print("4. Show Items Expiring in Three Weeks")
-    print("5. Delete an Item")
+    print("2. Items Expiring today")
+    print("3. Show Items Expiring in One Week")
+    print("4. Show Items Expiring in Two Weeks")
+    print("5. Show Items Expiring in Three Weeks")
+    print("6. Delete an Item")
 
     choice = input("Enter your choice 1-5 here:\n")
 
@@ -294,6 +327,7 @@ def main():
     clearConsole()
     heading()
     select_function()
+    
     
 if __name__ == "__main__":
     main()                                                               
