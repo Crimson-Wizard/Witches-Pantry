@@ -298,6 +298,7 @@ def select_function():
     '4': two_weeks,
     '5': three_weeks,
     '6': delete_item,
+    '7': log_out
     }
 
     print("Please select an option:")
@@ -307,6 +308,7 @@ def select_function():
     print("4. Show Items Expiring in Two Weeks")
     print("5. Show Items Expiring in Three Weeks")
     print("6. Delete an Item")
+    print("7. Log Out")
 
     choice = input("Enter your choice 1-5 here:\n")
 
@@ -316,7 +318,10 @@ def select_function():
     else:
         print('Invalid choice. Please try again.')
 
-
+def log_out():
+    
+   main()
+    
 
 def main():
     """
