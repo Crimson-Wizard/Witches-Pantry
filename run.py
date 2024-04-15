@@ -107,7 +107,8 @@ def add_item():
 
 def validate_data(values):
     """
-    function to validate input values  1(0) item 2(1) date. check if date format is correct.
+    function to validate input values item & date.
+    check if date format is correct.
     """
     today = datetime.today().date()
 
@@ -135,7 +136,8 @@ def validate_data(values):
 
 def add_item_to_pantry(item_date):
     """
-    funtion to add item to spreadsheet both item and date to bottom of spread sheet
+    funtion to add item to spreadsheet
+    both item and date to bottom of spread sheet
     """
     print("updating pantry....\n")
     pantry_worksheet = SHEET.worksheet(ask_username)
@@ -335,7 +337,8 @@ def delete_item():
 
 def select_function():
     """
-    Function to give user the option to select what function to use and to loop until user decides to exit.
+    Function to give user the option to select what function to use
+    and to loop until user decides to exit.
     """
     while True:
         print("\nPlease select an option:")
@@ -373,7 +376,8 @@ def select_function():
 
 def main():
     """
-    Main function to handle the initial login and transfer to the selection menu.
+    Main function to handle the initial login
+    and transfer to the selection menu.
     """
     clearConsole()
     if login():
