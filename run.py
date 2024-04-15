@@ -347,6 +347,7 @@ def select_function():
 
         if choice == '7':
             print("Logging out...")
+            main()
             break
 
         if choice in ('1', '2', '3', '4', '5', '6'):
@@ -364,9 +365,6 @@ def select_function():
                 print("Invalid choice. Please try again.")
         else:
             print("Invalid choice. Please try again.")
-
-#def log_out():
-    #main()
     
 
 def main():
