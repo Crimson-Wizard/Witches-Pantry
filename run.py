@@ -125,6 +125,8 @@ def validate_data(values):
 
     return True
 
+    select_function()
+
 
 
 def add_item_to_pantry(item_date):
@@ -136,7 +138,37 @@ def add_item_to_pantry(item_date):
     pantry_worksheet.append_row(item_date, value_input_option='USER_ENTERED')
     select_function()
 
+def expired_items():
+    """
+    function to see display item past use by date
+    """
+    worksheet = SHEET.worksheet(f'{ask_username}')
+    records = worksheet.get_all_values()
+    headers = records[0]
+    data = records[1:]
+    
+    try:
+        date_idx = headers.index('Use by date')
+    except ValueError:
+        print("Error: 'Date' column not found.")
+        return
 
+    today = datetime.today().strftime('%d/%m/%Y')
+    upcoming_items = []
+        
+    for row in data:
+        item_date = row[date_idx].strip()
+        if item_date <= today:
+            upcoming_items.append(row)
+
+    if upcoming_items:
+        print("\nOut of date items:\n")
+        for item in upcoming_items:
+            pprint(item)
+    else:
+        print("No items out of date.")
+
+    
 def items_expiring_today():
     """
     function to see items today
@@ -267,7 +299,9 @@ def delete_item():
     """
     funtion to delete item from spreadsheet
     """
-    print("Input item name to delete:\n")
+    
+    expired_items()
+    print("\nInput item name to delete:\n")
     worksheet = SHEET.worksheet(ask_username)
     records = worksheet.get_all_values()
     headers = records[0]
@@ -297,51 +331,55 @@ def delete_item():
 
 def select_function():
     """
-    Function to give user option to select what function to use
+    Function to give user the option to select what function to use and to loop until user decides to exit.
     """
+    while True:
+        print("\nPlease select an option:")
+        print("1. Add an Item")
+        print("2. Items Expiring today")
+        print("3. Show Items Expiring in One Week")
+        print("4. Show Items Expiring in Two Weeks")
+        print("5. Show Items Expiring in Three Weeks")
+        print("6. Delete an Item")
+        print("7. Log Out")
 
-    functions = {
-    '1': add_item,
-    '2': items_expiring_today,
-    '3': one_week,
-    '4': two_weeks,
-    '5': three_weeks,
-    '6': delete_item,
-    '7': log_out
-    }
+        choice = input("Enter your choice (1-7):\n")
 
-    print("Please select an option:")
-    print("1. Add an Item")
-    print("2. Items Expiring today")
-    print("3. Show Items Expiring in One Week")
-    print("4. Show Items Expiring in Two Weeks")
-    print("5. Show Items Expiring in Three Weeks")
-    print("6. Delete an Item")
-    print("7. Log Out")
+        if choice == '7':
+            print("Logging out...")
+            break
 
-    choice = input("Enter your choice 1-5 here:\n")
+        if choice in ('1', '2', '3', '4', '5', '6'):
+            try:
+                functions = {
+                    '1': add_item,
+                    '2': items_expiring_today,
+                    '3': one_week,
+                    '4': two_weeks,
+                    '5': three_weeks,
+                    '6': delete_item
+                }
+                functions[choice]()
+            except KeyError:
+                print("Invalid choice. Please try again.")
+        else:
+            print("Invalid choice. Please try again.")
 
-    if choice in functions:
-        functions[choice]()
-
-    else:
-        print('Invalid choice. Please try again.')
-
-
-def log_out():
-    
-   main()
+#def log_out():
+    #main()
     
 
 def main():
     """
-    Run all main functions
+    Main function to handle the initial login and transfer to the selection menu.
     """
     clearConsole()
-    login()
-    clearConsole()
-    heading()
-    select_function()
-     
+    if login():
+        clearConsole()
+        heading()
+        select_function()
+    else:
+        print("Failed to login. Exiting the program.")
+
 if __name__ == "__main__":
-    main()                                                               
+    main()                                                         
