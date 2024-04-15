@@ -7,16 +7,17 @@ SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
-    ]
+]
 
 CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('witches_pantry')
-ask_username =  None 
+ask_username = None
 item_date = None
 today = datetime.today()
 today_formatted = today.strftime('%d/%m/%Y')
+
 
 def heading():
     print(r'''
@@ -40,13 +41,15 @@ def read_logins():
     try:
         users_worksheet = SHEET.worksheet('users')
         records = users_worksheet.get_all_records()
-        new_contents = [[record['Username'], record['Password']] for record in records]
+        new_contents = [[record['Username'], record['Password']]
+                        for record in records]
         return new_contents
     except Exception as e:
         print(f"Failed to read logins from sheet: {e}")
         return []
-              
-logins = read_logins() 
+
+
+logins = read_logins()
 
 
 def login():
@@ -56,23 +59,24 @@ def login():
     global ask_username
     max_attempts = 3
     attempts = 0
-    
+
     while attempts < max_attempts:
         ask_username = input('Username:\n')
         ask_password = input('Password:\n')
-        
+
         for line in logins:
             if line[0] == ask_username and line[1] == ask_password:
-                print(f'Logged in successfully, welcome to your pantry {ask_username}')
-                return True  
-        
+                print(f'Logged in successfully, welcome to your pantry {
+                      ask_username}')
+                return True
+
         print('Username / Password is incorrect')
         attempts += 1
-    
+
     print("Login failed. Please contact admin.")
     return False
 
-    
+
 def add_item():
     """
     function to add item to list.
@@ -95,7 +99,7 @@ def add_item():
             formatted_date = date.strftime('%d/%m/%Y')
             item_date[1] = formatted_date
             break
-    
+
     return item_date
 
     select_function()
@@ -111,7 +115,8 @@ def validate_data(values):
         if len(values) != 2:
             raise ValueError("Item and Use By Date required")
 
-        item_date = datetime.strptime(values[1].strip(), "%d/%m/%Y").date()  # Parse date and strip whitespace
+        # Parse date and strip whitespace
+        item_date = datetime.strptime(values[1].strip(), "%d/%m/%Y").date()
         if item_date < today:
             raise ValueError("Item date cannot be in the past.")
 
@@ -120,13 +125,12 @@ def validate_data(values):
         print('Item added')
 
     except ValueError as e:
-        print(f"Invalid data: {e}. Please try again.") 
+        print(f"Invalid data: {e}. Please try again.")
         return False
 
     return True
 
     select_function()
-
 
 
 def add_item_to_pantry(item_date):
@@ -138,6 +142,7 @@ def add_item_to_pantry(item_date):
     pantry_worksheet.append_row(item_date, value_input_option='USER_ENTERED')
     select_function()
 
+
 def expired_items():
     """
     function to see display item past use by date
@@ -146,7 +151,7 @@ def expired_items():
     records = worksheet.get_all_values()
     headers = records[0]
     data = records[1:]
-    
+
     try:
         date_idx = headers.index('Use by date')
     except ValueError:
@@ -155,7 +160,7 @@ def expired_items():
 
     today = datetime.today().strftime('%d/%m/%Y')
     upcoming_items = []
-        
+
     for row in data:
         item_date = row[date_idx].strip()
         if item_date <= today:
@@ -168,7 +173,7 @@ def expired_items():
     else:
         print("No items out of date.")
 
-    
+
 def items_expiring_today():
     """
     function to see items today
@@ -177,31 +182,31 @@ def items_expiring_today():
     records = worksheet.get_all_values()
     headers = records[0]
     data = records[1:]
-    
+
     try:
         date_idx = headers.index('Use by date')
     except ValueError:
         print("Error: 'Date' column not found.")
         return
 
-    today = datetime.today().strftime('%d/%m/%Y')  # Get today's date formatted as 'dd/mm/yyyy'
+    today = datetime.today().strftime('%d/%m/%Y')
     upcoming_items = []
-        
+
     for row in data:
-        item_date = row[date_idx].strip()  # Strip any whitespace from the date string
+        item_date = row[date_idx].strip()
         if item_date == today:
             upcoming_items.append(row)
 
     if upcoming_items:
         print("Items expiring today:")
         for item in upcoming_items:
-            pprint(item)  # Pretty print each item
+            pprint(item)
     else:
         print("No items expiring today.")
 
     select_function()
 
-   
+
 def one_week():
     """
     function to see items 1 week
@@ -211,7 +216,7 @@ def one_week():
     records = worksheet.get_all_values()
     headers = records[0]
     data = records[1:]
-    
+
     date_idx = headers.index('Date') if 'Date' in headers else 1
 
     upcoming_items = []
@@ -242,7 +247,7 @@ def two_weeks():
     records = worksheet.get_all_values()
     headers = records[0]
     data = records[1:]
-    
+
     date_idx = headers.index('Date') if 'Date' in headers else 1
 
     upcoming_items = []
@@ -260,7 +265,7 @@ def two_weeks():
             pprint(item)
     else:
         print("No items expiring within the next two week.")
- 
+
     select_function()
 
 
@@ -273,7 +278,7 @@ def three_weeks():
     records = worksheet.get_all_values()
     headers = records[0]
     data = records[1:]
-    
+
     date_idx = headers.index('Date') if 'Date' in headers else 1
 
     upcoming_items = []
@@ -293,13 +298,12 @@ def three_weeks():
         print("No items expiring within the next three weeks.")
 
     select_function()
-    
-    
+
+
 def delete_item():
     """
     funtion to delete item from spreadsheet
     """
-    
     expired_items()
     print("\nInput item name to delete:\n")
     worksheet = SHEET.worksheet(ask_username)
@@ -365,7 +369,7 @@ def select_function():
                 print("Invalid choice. Please try again.")
         else:
             print("Invalid choice. Please try again.")
-    
+
 
 def main():
     """
@@ -379,5 +383,6 @@ def main():
     else:
         print("Failed to login. Exiting the program.")
 
+
 if __name__ == "__main__":
-    main()                                                         
+    main()
