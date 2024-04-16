@@ -66,8 +66,8 @@ def login():
 
         for line in logins:
             if line[0] == ask_username and line[1] == ask_password:
-                print(f'Logged in successfully, welcome to your pantry {
-                      ask_username}')
+                print(f'Logged in successfully, welcome to your pantry 
+                {ask_username}')
                 return True
 
         print('Username / Password is incorrect')
