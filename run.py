@@ -49,13 +49,11 @@ def read_logins():
         return []
 
 
-logins = read_logins()
-
-
-def login():
+def login(logins):
     """
     funtion to enter user name and password to login
     """
+    heading()
     global ask_username
     max_attempts = 3
     attempts = 0
@@ -104,7 +102,7 @@ def add_item():
 
     return item_date
 
-    select_function()
+   
 
 
 def validate_data(values):
@@ -133,9 +131,7 @@ def validate_data(values):
 
     return True
 
-    select_function()
-
-
+    
 def add_item_to_pantry(item_date):
     """
     funtion to add item to spreadsheet
@@ -354,6 +350,9 @@ def select_function():
 
         choice = input("Enter your choice (1-7):\n")
 
+        clearConsole()
+        heading()
+
         if choice == '7':
             print("Logging out...")
             main()
@@ -382,7 +381,8 @@ def main():
     and transfer to the selection menu.
     """
     clearConsole()
-    if login():
+    logins = read_logins()
+    if login(logins):
         clearConsole()
         heading()
         select_function()
