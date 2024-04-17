@@ -14,6 +14,14 @@
             font-family: Arial;
         }
 
+        #main-cotainer {
+                align-items: center;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                justify-content: center;
+        }
+
         /**
         * Default styles for xterm.js
         */
@@ -168,6 +176,6 @@
     </style>
 </head>
 
-@{body}
+<main id="main-container">@{body}</main>
 
 </html>
