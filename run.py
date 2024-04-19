@@ -102,8 +102,6 @@ def add_item():
 
     return item_date
 
-   
-
 
 def validate_data(values):
     """
@@ -131,7 +129,7 @@ def validate_data(values):
 
     return True
 
-    
+
 def add_item_to_pantry(item_date):
     """
     funtion to add item to spreadsheet
