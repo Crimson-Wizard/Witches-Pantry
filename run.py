@@ -67,7 +67,7 @@ def login(logins):
                 print(
                     f'Logged in successfully, \
                         welcome to your pantry {ask_username}'
-                    )
+                )
                 return True
 
         print('Username / Password is incorrect')
@@ -79,28 +79,22 @@ def login(logins):
 
 def add_item():
     """
-    function to add item to list.
-    then seperate input into two values
-    then convert the seconf input into date format
+    Function to add item to google sheet
     """
     global item_date
+    item_date = []
 
-    while True:
-        print("Please enter item to pantry")
-        print("Enter Item name and date in non US format dd/mm/yyyy")
-        print("Example: Cheese,20/04/2023 no space after comma\n")
+    print("Please enter the item name and its expiration date:")
+    item_name = input("Item name (e.g., Milk): ")
+    exp_date = input("Expiration date (dd/mm/yyyy): ")
 
-        item_str = input("Enter:\n")
-        item_date = item_str.split(",")
-
-        if validate_data(item_date):
-            date_str = item_date[1]
-            date = datetime.strptime(date_str, "%d/%m/%Y")
-            formatted_date = date.strftime('%d/%m/%Y')
-            item_date[1] = formatted_date
-            break
-
-    return item_date
+    if validate_data([item_name, exp_date]):
+        formatted_date = datetime.strptime(
+            exp_date, "%d/%m/%Y").strftime('%d/%m/%Y')
+        item_date = [item_name, formatted_date]
+        add_item_to_pantry(item_date)
+    else:
+        print("Failed to validate data.")
 
 
 def validate_data(values):
@@ -114,7 +108,6 @@ def validate_data(values):
         if len(values) != 2:
             raise ValueError("Item and Use By Date required")
 
-        # Parse date and strip whitespace
         item_date = datetime.strptime(values[1].strip(), "%d/%m/%Y").date()
         if item_date < today:
             raise ValueError("Item date cannot be in the past.")
@@ -130,15 +123,19 @@ def validate_data(values):
     return True
 
 
-def add_item_to_pantry(item_date):
+def add_item_to_pantry(item_data):
     """
-    funtion to add item to spreadsheet
-    both item and date to bottom of spread sheet
+    Function to add item to the spreadsheet;
+    both item and date to the bottom of the sheet.
     """
-    print("updating pantry....\n")
-    pantry_worksheet = SHEET.worksheet(ask_username)
-    pantry_worksheet.append_row(item_date, value_input_option='USER_ENTERED')
-    select_function()
+    print("Updating pantry....\n")
+    try:
+        pantry_worksheet = SHEET.worksheet(ask_username)
+        pantry_worksheet.append_row(
+            item_data, value_input_option='USER_ENTERED')
+        print("Item successfully added to your pantry.")
+    except Exception as e:
+        print(f"Failed to add item: {e}")
 
 
 def expired_items():
@@ -338,12 +335,12 @@ def select_function():
     """
     while True:
         print("\nPlease select an option:")
-        print("1. Add an Item")
-        print("2. Items Expiring today")
+        print("1. Add Item")
+        print("2. Show Items Expiring today")
         print("3. Show Items Expiring in One Week")
         print("4. Show Items Expiring in Two Weeks")
         print("5. Show Items Expiring in Three Weeks")
-        print("6. Delete an Item")
+        print("6. Delete Item")
         print("7. Log Out")
 
         choice = input("Enter your choice (1-7):\n")
