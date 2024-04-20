@@ -4,8 +4,6 @@ The UK throws away around 9.5 million tonnes of food waste in a single year and 
 
 The Witches Pantry is my idea to help reduce food waste by being able to check at any time when an item in your fridge/cupboards is going to expire. By being able to check within the day/week/two weeks/three weeks when items in your pantry are expiring we will be able to have better control over the waste we produce.
 
-[Here is the live version of my project](https://witches-pantry-1368445260e3.herokuapp.com/)
-
 ![image of live site on multiple devices](<readme images/responsive-image.webp>)
 
 ## How To Use Functions
